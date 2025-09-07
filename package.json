@@ -1,0 +1,21 @@
+{
+  "name": "zeni",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "workspaces": [
+    "apps/*",
+    "backend/firebase/functions",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.15.2",
+    "turbo": "^2.5.6",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "test": "zeni-test-t1",
+    "uat":  "zeni-uat-a1b2c3",
+    "prod": "zeni-prod-a1b2c3"
+  },
+  "targets": {},
+  "etags": {}
+}

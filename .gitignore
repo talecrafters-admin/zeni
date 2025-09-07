@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+.expo
+.expo-shared
+*.apk
+*.aab
+.env*
+firebase-debug.log
+backend/firebase/functions/lib
+backend/firebase/functions/node_modules
