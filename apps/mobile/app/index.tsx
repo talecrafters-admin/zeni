@@ -1,85 +1,41 @@
-import { useEffect, useState } from "react";
-import { Button, Text, View, Alert } from "react-native";
-import { auth, fx } from "../src/services/firebase";
-import { signInAnonymously, onAuthStateChanged, User } from "firebase/auth";
-import { httpsCallable } from "firebase/functions";
+import { useEffect } from "react";
+import { router } from "expo-router";
+import { useAuth } from "../src/contexts/AuthContext";
+import { View, ActivityIndicator } from "react-native";
+import { useTheme } from "../src/contexts/ThemeContext";
 
-export default function Home() {
-  const [status, setStatus] = useState("Initializing...");
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export default function Index() {
+  const { user, loading, isOnboardingComplete } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
-    // Listen to auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsLoading(false);
-      if (user) {
-        setStatus(`Signed in as: ${user.uid}`);
+    if (loading) return;
+
+    if (user) {
+      if (isOnboardingComplete) {
+        router.replace("/(app)");
       } else {
-        setStatus("Not signed in");
+        router.replace("/(onboarding)/assessment");
       }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const signIn = async () => {
-    try {
-      setIsLoading(true);
-      setStatus("Signing in...");
-      await signInAnonymously(auth);
-    } catch (error: any) {
-      setStatus("Sign in error: " + error.message);
-      Alert.alert("Sign In Error", error.message);
-      setIsLoading(false);
+    } else {
+      router.replace("/splash");
     }
-  };
+  }, [user, loading, isOnboardingComplete]);
 
-  const callPing = async () => {
-    try {
-      const ping = httpsCallable(fx, "ping");
-      const res = await ping({});
-      setStatus("Function OK: " + JSON.stringify(res.data));
-    } catch (e: any) {
-      setStatus("Function error: " + e?.message);
-    }
-  };
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
 
-  return (
-    <View
-      style={{
-        flex: 1,
-        gap: 12,
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-      }}
-    >
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
-        Zeni - Mental Wellness
-      </Text>
-
-      <Text style={{ fontSize: 16, textAlign: "center", marginBottom: 20 }}>
-        Status: {status}
-      </Text>
-
-      {!user && (
-        <Button
-          title={isLoading ? "Signing in..." : "Sign In Anonymously"}
-          onPress={signIn}
-          disabled={isLoading}
-        />
-      )}
-
-      {user && (
-        <>
-          <Text style={{ fontSize: 14, color: "green", marginBottom: 10 }}>
-            ✅ Authenticated
-          </Text>
-          <Button title="Test Ping Function" onPress={callPing} />
-        </>
-      )}
-    </View>
-  );
+  return null;
 }

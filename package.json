@@ -1,20 +1,40 @@
 {
   "name": "zeni",
   "private": true,
-  "packageManager": "pnpm@9",
+  "packageManager": "pnpm@10",
   "workspaces": [
     "apps/*",
-    "backend/firebase/functions",
-    "packages/*"
+    "packages/*",
+    "services/*"
   ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "mobile": "cd apps/mobile && pnpm start",
+    "mobile:android": "cd apps/mobile && pnpm android",
+    "mobile:ios": "cd apps/mobile && pnpm ios",
+    "mobile:web": "cd apps/mobile && pnpm web",
+    "install:all": "pnpm install",
+    "install:mobile": "pnpm install --filter mobile",
+    "install:api": "pnpm install --filter @zeni/api",
+    "install:supabase": "pnpm install --filter @zeni/supabase",
+    "install:packages": "pnpm install --filter @zeni/*",
+    "clean": "turbo run clean && rm -rf node_modules apps/*/node_modules packages/*/node_modules services/*/node_modules",
+    "type-check": "turbo run type-check",
+    "db:generate-types": "pnpm -C services/supabase generate-types",
+    "db:migrate": "pnpm -C services/supabase dlx supabase db push",
+    "db:reset": "pnpm -C services/supabase dlx supabase db reset --force",
+    "functions:deploy": "pnpm -C services/supabase dlx supabase functions deploy",
+    "supabase:login": "pnpm -C services/supabase dlx supabase login",
+    "supabase:link": "pnpm -C services/supabase dlx supabase link --project-ref $PROJECT_REF",
+    "supabase:push": "pnpm -C services/supabase dlx supabase db push",
+    "supabase:push:root": "pnpm dlx supabase db push",
+    "db:migrate:root": "pnpm dlx supabase db push",
+    "setup:env": "echo 'Creating .env.test file...' && echo 'SUPABASE_URL=your_supabase_url_here\nSUPABASE_ANON_KEY=your_supabase_anon_key_here\nSUPABASE_DB_SCHEMA=api\nAPP_ENV=test' > .env.test && echo '.env.test file created! Please update with your actual Supabase credentials.'"
   },
   "devDependencies": {
-    "firebase-tools": "^14.15.2",
     "turbo": "^2.5.6",
     "typescript": "^5.9.2"
   }

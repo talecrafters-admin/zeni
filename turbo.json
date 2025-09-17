@@ -4,9 +4,22 @@
     "dev": { "cache": false },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "build/**"]
+      "outputs": ["dist/**", ".next/**", "build/**", "lib/**"]
     },
-    "lint": {},
-    "test": {}
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "generate-types": {
+      "cache": false
+    },
+    "migrate": {
+      "cache": false
+    },
+    "deploy-functions": {
+      "cache": false
+    }
   }
 }
